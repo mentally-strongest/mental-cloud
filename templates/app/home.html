@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block title %}My Files{% endblock %}
+
+{% block content %}
+<h2 class="text-center text-dark mb-4">Your Files</h2>
+
+<!-- File Upload Form -->
+<form method="post" enctype="multipart/form-data" action="{% url 'upload_file' %}">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+        <input type="file" name="file" class="form-control" id="uploadFile" required>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>
+
+<!-- File List (Cards) -->
+<div class="row">
+    {% for file in files %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm" style="cursor: pointer;">
+                {% with icon_path='icons/'|add:file.get_icon_name|add:'.png' %}
+                    <img src="{% static icon_path %}" class="card-img-top img-thumbnail" alt="File icon" onerror="this.src='{% static 'icons/default.png' %}'">
+                {% endwith %}
+                <p>{{ file.get_icon }}</p>
+                <div class="card-body">
+                    <h5 class="card-title">{{ file.original_name }}</h5>
+                    <p class="card-text">{{ file.get_extension }} - {{ file.get_size }} bytes</p>
+                    <button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#fileDetails{{ file.id }}" aria-expanded="false" aria-controls="fileDetails{{ file.id }}">
+                        ...
+                    </button>
+                    <div class="collapse" id="fileDetails{{ file.id }}">
+                        <div class="mt-3">
+                            <p><strong>File Size:</strong> {{ file.get_size }} bytes</p>
+                            <p><strong>Upload Date:</strong> {{ file.created_at }}</p>
+                            <p><strong>Extension:</strong> {{ file.get_extension }}</p>
+                            <p><strong>Privacy Status:</strong> {{ file.is_public|yesno:"Public,Private" }}</p>
+
+                            {% if file.is_public %}
+                                <p><strong>Shared Link:</strong> <a href="/shared/{{ file.shared_link }}" target="_blank">{{ file.shared_link }}</a></p>
+                            {% else %}
+                                <button class="btn btn-outline-primary" onclick="copyToClipboard('{{ file.shared_link }}')">Copy Link</button>
+                            {% endif %}
+
+                            <div class="mt-3">
+                                <a href="{% url 'change_privacy' file.id %}" class="btn btn-sm btn-outline-secondary">Change Privacy</a>
+                                <a href="{% url 'delete_file' file.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center text-muted">
+            <p>No files uploaded yet.</p>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+<script>
+    // Function to copy the shared link to clipboard
+    function copyToClipboard(link) {
+        const el = document.createElement('textarea');
+        el.value = link;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Link copied to clipboard!");
+    }
+</script>

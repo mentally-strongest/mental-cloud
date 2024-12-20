@@ -1,0 +1,28 @@
+{% extends 'base_login.html' %}
+{% block content %}
+    <div class="text-center">
+        <h4 class="text-dark mb-4">Sign Up Form</h4>
+    </div>
+    <form class="user" method="post">
+        {% csrf_token %}
+        <div class="mb-3">{{ form.first_name }}</div>
+        <div class="mb-3">{{ form.last_name }}</div>
+        <div class="mb-3">{{ form.email }}</div>
+        <div class="mb-3">{{ form.username }}</div>
+        <div class="mb-3">{{ form.password1 }}</div>
+        <div class="mb-3">{{ form.password2 }}</div>
+        {% if form.errors %}
+            {% for field, message in form.errors.items %}
+                <div class="text-center mt-3 border border-danger rounded mb-3">
+                    <p class="text-danger">{{ field }} - {{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="text-center">
+            <button class="btn btn-primary d-block btn-user w-100" type="submit">Sign Up</button>
+        </div>
+        <div class="text-center mt-3">
+            <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
+        </div>
+    </form>
+{% endblock content %}
