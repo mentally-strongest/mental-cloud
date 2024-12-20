@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}File Details{% endblock %}
+
+{% block content %}
+<h2>File Details</h2>
+
+<p><strong>Name:</strong> {{ file.original_name }}</p>
+<p><strong>Size:</strong> {{ file.get_size }} bytes</p>
+<p><strong>Owner:</strong> {{ file.user.username }}</p>
+<p><strong>Privacy:</strong> {{ file.is_public|yesno:"Public,Private" }}</p>
+
+{% if owner %}
+    <a href="{% url 'change_privacy' file.id %}">Change Privacy</a>
+    <a href="{% url 'delete_file' file.id %}">Delete</a>
+    <a href="{% url 'download_file' file.id %}">Download</a>
+{% elif file.is_public %}
+    <a href="{% url 'download_file' file.id %}">Download</a>
+{% else %}
+    <p>This file is private and cannot be accessed.</p>
+{% endif %}
+{% endblock %}
