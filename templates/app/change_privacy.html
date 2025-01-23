@@ -1,5 +1,29 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+<!-- app/change_privacy.html -->
+{% extends "base.html" %}
+
+{% block title %}Change Privacy{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center text-dark mb-4">Change Privacy Settings</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">{{ file.original_name }}</h5>
+            <p class="card-text">Current status:
+                <strong>{{ file.is_public|yesno:"Public,Private" }}</strong>
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    {% if file.is_public %}
+                        Make Private
+                    {% else %}
+                        Make Public
+                    {% endif %}
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
