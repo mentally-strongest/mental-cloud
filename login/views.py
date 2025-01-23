@@ -17,7 +17,7 @@ class LogInView(LoginView):
         if request.user.is_authenticated:
             return redirect('home')
 
-        next_page = request.GET.get('next') or ''
+        next_page = request.GET.get('next') or 'home'
         form = LogInForm()
         return render(request, self.template_name, {'form': form, 'next': next_page})
 
