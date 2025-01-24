@@ -1,4 +1,3 @@
-# app/models.py
 import os
 import uuid
 
@@ -7,18 +6,27 @@ from django.db import models
 from django.template.defaultfilters import upper
 
 
+def user_directory_path(instance, filename):
+    return f'uploads/{instance.pk or "temp"}/{filename}'
+
+
+
 class File(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='files')
-    file = models.FileField(upload_to='uploads/')
+    original_name = models.CharField(max_length=255)
+    file = models.FileField(upload_to=user_directory_path)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
     shared_link = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    original_name = models.CharField(max_length=255)
+
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            super().save(*args, **kwargs)
         if not self.original_name:
             self.original_name = os.path.basename(self.file.name)
         super().save(*args, **kwargs)
+
 
     def delete(self, *args, **kwargs):
         if self.file:
@@ -38,7 +46,6 @@ class File(models.Model):
 
     def get_icon_name(self):
         return upper(self.get_extension()[1:])
-
 
     def get_size(self):
         return self.file.size

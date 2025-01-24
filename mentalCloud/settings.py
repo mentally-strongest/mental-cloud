@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
     'bootstrap5',
-    'app.apps.AppConfig'
+    'app.apps.AppConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'login.User'
+
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/home/'
+LOGIN_URL = '/login/'
