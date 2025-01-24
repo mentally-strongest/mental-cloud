@@ -11,9 +11,9 @@
 <p><strong>Privacy:</strong> {{ file.is_public|yesno:"Public,Private" }}</p>
 
 {% if owner %}
-    <a href="{% url 'change_privacy' file.id %}">Change Privacy</a>
-    <a href="{% url 'delete_file' file.id %}">Delete</a>
-    <a href="{% url 'download_file' file.id %}">Download</a>
+    <a href="{% url 'change_privacy' file.id %}" class="btn btn-outline-info btn-sm">Change Privacy</a>
+    <a href="{% url 'delete_file' file.id %}" class="btn btn-outline-info btn-sm">Delete</a>
+    <a href="{% url 'download_file' file.id %}" class="btn btn-outline-info btn-sm">Download</a>
 {% elif file.is_public %}
     <a href="{% url 'download_file' file.id %}">Download</a>
 {% else %}

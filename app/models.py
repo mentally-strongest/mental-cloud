@@ -1,13 +1,14 @@
 import os
 import uuid
 
+from django.core.files.storage import default_storage
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import upper
 
 
 def user_directory_path(instance, filename):
-    return f'uploads/{instance.pk or "temp"}/{filename}'
+    return f'uploads/{instance.id}/{filename}'
 
 
 
@@ -21,12 +22,10 @@ class File(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         if not self.original_name:
             self.original_name = os.path.basename(self.file.name)
         super().save(*args, **kwargs)
-
 
     def delete(self, *args, **kwargs):
         if self.file:
